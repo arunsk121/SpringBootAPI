@@ -3,49 +3,38 @@ package com.example.springAPI;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
+@RequestMapping("/api/v2")
 public class HomeController {
 	
 	@Autowired
 	private EmployeeService employeeService;
-	
 
-	@GetMapping("/")
-	public List<Employee> getAll(){
-		return employeeService.getAll();
+	@GetMapping("/employees")
+	public List<Employee> sortBySalary(@RequestParam(required = false) String sort){
+		if(sort == null) return employeeService.getAll();
+		return employeeService.sortBy(sort);
 	}
-	
-	@GetMapping("/{id}")
-	public Employee getById(@PathVariable("id") int id){
+	@GetMapping("/employee/{id}")
+	public Employee getById(@PathVariable("id") Long id){
 		return employeeService.getById(id);
 	}
-	
-	@PostMapping("/")
+
+	@PostMapping("/addEmployee")
 	public void postData(@RequestBody Employee emp){
 		employeeService.postData(emp);
 	}
-	
-	@PutMapping("/update/{id}")
+
+	@PutMapping("/updateEmployee/{id}")
 	public void updateData(@RequestBody Employee emp){
 		employeeService.putData(emp);
 	}
-	
-	@DeleteMapping("/{id}")
-	public void deleteById(@PathVariable("id") int id){
+
+	@DeleteMapping("/deleteEmployee/{id}")
+	public void deleteById(@PathVariable("id") Long id){
 		employeeService.deleteData(id);
 	}
-	
-	@GetMapping("/sort-by-sal")
-	public List<Employee> sortBySalary(){
-		return employeeService.sortBySalary();
-	}
+
 }
